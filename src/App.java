@@ -1,5 +1,23 @@
-public class App {
-    public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
+public class App extends Application {
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Hello World!");
+
+        StackPane root = new StackPane();
+        root.getChildren().add(new Label("Hello, World!"));
+
+        Scene scene = new Scene(root, 300, 250);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }

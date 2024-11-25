@@ -1,0 +1,56 @@
+computing columns of mania in osu
+
+512/(notecount * 2) = first column of (notecount)k
+
+to compute the next iteration
+(512/notecount) = x amount to next note
+
+syntax:
+(x,y,time,type,hitSound,endTime:hitSample)
+
+x determines the index of the column that the hold will be in. It is computed by 
+floor(x * columnCount / 512) and clamped between 0 and columnCount - 1.
+
+Example of 9k
+[HitObjects]
+28,192,1636,1,0,0:0:0:0:
+85,192,1951,1,0,0:0:0:0:
+142,192,2267,1,0,0:0:0:0:
+199,192,2583,1,0,0:0:0:0:
+256,192,2899,1,0,0:0:0:0:
+312,192,3215,1,0,0:0:0:0:
+369,192,3530,1,0,0:0:0:0:
+426,192,3846,1,0,0:0:0:0:
+483,192,4162,1,0,0:0:0:0:
+
+Here, columnCount is 9 (since it's a 9-key setup). Let's compute the column for each x value in the example:
+
+For x = 28: [ column = floor(28 * 9 / 512) = floor(0.4921875) = 0 ]
+
+For x = 85: [ column = floor(85 * 9 / 512) = floor(1.49609375) = 1 ]
+
+For x = 142: [ column = floor(142 * 9 / 512) = floor(2.4921875) = 2 ]
+
+For x = 199: [ column = floor(199 * 9 / 512) = floor(3.49609375) = 3 ]
+
+For x = 256: [ column = floor(256 * 9 / 512) = floor(4.5) = 4 ]
+
+For x = 312: [ column = floor(312 * 9 / 512) = floor(5.484375) = 5 ]
+
+For x = 369: [ column = floor(369 * 9 / 512) = floor(6.48828125) = 6 ]
+
+For x = 426: [ column = floor(426 * 9 / 512) = floor(7.4921875) = 7 ]
+
+For x = 483: [ column = floor(483 * 9 / 512) = floor(8.49609375) = 8 ]
+
+So, the computed columns for each x value are:
+
+x = 28 -> column 0
+x = 85 -> column 1
+x = 142 -> column 2
+x = 199 -> column 3
+x = 256 -> column 4
+x = 312 -> column 5
+x = 369 -> column 6
+x = 426 -> column 7
+x = 483 -> column 8

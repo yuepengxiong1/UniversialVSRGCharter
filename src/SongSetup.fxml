@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="550.0" prefWidth="565.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SongSetupController">
+<VBox prefHeight="652.0" prefWidth="752.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SongSetupController">
     <!-- Section for Song and Map Metadata -->
     <GridPane layoutX="100.0" layoutY="67.0">
         <columnConstraints>
@@ -40,18 +40,16 @@
         <TextField fx:id="txtFTags" promptText="Tags for easy search" GridPane.columnIndex="1" GridPane.rowIndex="5" />
       <TextField fx:id="txtFDifficultyName" promptText="Specify Name For Difficulty" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <Label text="Key Count:" GridPane.rowIndex="6" />
-      <Slider fx:id="sldrKeyCount" blockIncrement="0.5" max="10.0" value="4.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <Slider fx:id="sldrKeyCount" blockIncrement="0.5" majorTickUnit="0.5" max="10.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="4.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
       <Label text="Overall Difficulty (OD):" GridPane.rowIndex="7" />
-      <Slider fx:id="sldrOverallDifficulty" blockIncrement="0.5" max="10.0" value="8.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+      <Slider fx:id="sldrOverallDifficulty" blockIncrement="0.5" majorTickUnit="0.5" max="10.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="8.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
       <padding>
          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
       </padding>
     </GridPane>
-    <!-- Quick Note Section -->
-    <Label style="-fx-font-weight: bold;" text="A quick note" />
     <Label style="-fx-text-fill: red;" wrapText="true" />
     <!-- Links -->
-    <GridPane layoutX="100.0" layoutY="67.0">
+    <GridPane layoutX="100.0" layoutY="67.0" prefHeight="210.0" prefWidth="732.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -59,8 +57,6 @@
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
-        <Label style="-fx-text-fill: blue; -fx-underline: true;" text="Editor Guide/FAQ" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <Label style="-fx-text-fill: blue; -fx-underline: true;" text="Official Submission Criteria" GridPane.columnIndex="1" GridPane.rowIndex="0" />
     </GridPane>
     <!-- Buttons -->
     <GridPane layoutX="100.0" layoutY="67.0">
@@ -71,7 +67,10 @@
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
-        <Button fx:id="okButton" text="OK" GridPane.columnIndex="0" />
-        <Button fx:id="cancelButton" text="Cancel" GridPane.columnIndex="1" />
+        <Button fx:id="okButton" prefHeight="25.0" prefWidth="366.0" text="OK" GridPane.columnIndex="0" />
+        <Button fx:id="cancelButton" prefHeight="25.0" prefWidth="366.0" text="Cancel" GridPane.columnIndex="1" />
     </GridPane>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </VBox>

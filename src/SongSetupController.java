@@ -2,6 +2,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+// Replace with the actual package name
 
 public class SongSetupController {
 
@@ -43,16 +44,27 @@ public class SongSetupController {
     @FXML
     private void handleOkButtonAction() {
         // Handle OK button action
-        String artist = txtFArtist.getText();
-        String title = txtFTitle.getText();
-        String creator = txtFCreator.getText();
-        String difficultyName = txtFDifficultyName.getText();
-        String source = txtFSource.getText();
-        String tags = txtFTags.getText();
-        double keyCount = sldrKeyCount.getValue();
-        double overallDifficulty = sldrOverallDifficulty.getValue();
+        String[] difficultyList = {"Easy", "Medium", "Hard"};
+        String[] arrayContainingCharts = {"chart1.osu", "chart2.osu"};
 
-        // Process the data as needed
+        OSUManiaMetadata osuManiaMetadata = new OSUManiaMetadata(
+            "Song Name",
+            "Artist Name",
+            "Chart Creator",
+            "/path/to/chart/directory",
+            120.0f,
+            500,
+            difficultyList,
+            arrayContainingCharts
+        );
+
+        // Use the osuManiaMetadata object as needed
+        System.out.println("Song Name: " + osuManiaMetadata.getSongName());
+        System.out.println("Artist: " + osuManiaMetadata.getArtist());
+        System.out.println("Creator: " + osuManiaMetadata.getCreatorOfChart());
+        System.out.println("Chart Directory: " + osuManiaMetadata.getPathToChartDirectory());
+        System.out.println("BPM: " + osuManiaMetadata.BPM);
+        System.out.println("Song Offset: " + osuManiaMetadata.setSongOffset);
     }
 
     @FXML

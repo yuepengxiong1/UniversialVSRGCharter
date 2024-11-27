@@ -1,0 +1,42 @@
+ private final Object[][] generalMetadata = {
+        {"audioFilename", ""},
+        {"audioLeadIn", 0},
+        {"previewTime", 0},
+        {"countdown", 0},
+        {"sampleSet", "None"},
+        {"stackLeniency", 0.7},
+        {"mode", 3}, // mode 3 is mania and that is what we only care about
+        {"letterboxInBreaks", 0},
+        {"specialStyle", 0},
+        {"widescreenStoryboard", 0}
+    };
+
+    //Editor
+    private final Object[][] editorMetadata = {
+        {"distanceSpacing", 0.8},
+        {"beatDivisor", 4},
+        {"gridSize", 8},
+        {"timelineZoom", 1.0}
+    };
+
+    private final Object[][] metaData = {
+        {"title", "unknown"},
+        {"titleUnicode", "unknown"},
+        {"artist", "unknown"},
+        {"artistUnicode", "unknown"},
+        {"creator", "unknown"},
+        {"version", ""},
+        {"source", ""},
+        {"tags", ""},
+        {"beatmapID", 0},
+        {"beatmapSetID", -1}
+    };
+
+    private final Object[][] difficultyMetadata = {
+        {"HPDrainRate", 0},
+        {"CircleSize", 4},
+        {"OverallDifficulty", 0},
+        {"ApproachRate", 5},
+        {"SliderMultiplier", 1.4},
+        {"SliderTickRate", 1}
+    };

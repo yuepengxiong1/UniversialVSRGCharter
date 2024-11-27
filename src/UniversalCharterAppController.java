@@ -29,7 +29,7 @@ public class UniversalCharterAppController {
     @FXML
     protected void handleCreateNewChartOnAction(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Tester.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Editor.fxml"));
             Parent root = fxmlLoader.load();
             Stage stage = new Stage();
             stage.setTitle("Create New Chart");

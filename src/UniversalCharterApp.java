@@ -16,7 +16,7 @@ public class UniversalCharterApp extends Application {
     
         @Override
         public void start(Stage primaryStage) throws Exception {
-            Parent root = FXMLLoader.load(getClass().getResource("UniversalCharterApp.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("Editor.fxml"));
             primaryStage.setTitle("Universal Charter App");
             primaryStage.setScene(new Scene(root));
             primaryStage.show();

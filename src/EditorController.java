@@ -1,4 +1,7 @@
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,11 +14,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.scene.layout.Pane;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 
 
 
 
-public class TesterController {
+public class EditorController {
 
     @FXML
     private Label myLabel;
@@ -53,6 +57,45 @@ public class TesterController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleOpenMenu(){
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+
+        // Set extension filter for .osu files
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("OSU files (*.osu)", "*.osu");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        // Load the last opened path if available
+        File lastOpenedPath = new File("lastOpenedPath.txt");
+        if (lastOpenedPath.exists()) {
+            try (Scanner scanner = new Scanner(lastOpenedPath)) {
+            if (scanner.hasNextLine()) {
+                fileChooser.setInitialDirectory(new File(scanner.nextLine()));
+            }
+            } catch (IOException e) {
+            e.printStackTrace();
+            }
+        }
+
+        File file = fileChooser.showOpenDialog(stage);
+        if (file != null) {
+            System.out.println("File selected: " + file.getAbsolutePath());
+
+            // Save the last opened path
+            try (PrintWriter writer = new PrintWriter(lastOpenedPath)) {
+            writer.println(file.getParent());
+            } catch (IOException e) {
+            e.printStackTrace();
+            }
+
+            OSUManiaMetadata hello = new OSUManiaMetadata(file.getAbsolutePath());
+            //hello.returnMetadataOsu();
+        }
+        
     }
 
     @FXML

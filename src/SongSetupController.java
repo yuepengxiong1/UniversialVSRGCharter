@@ -2,7 +2,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-// Replace with the actual package name
+
+import javafx.stage.Stage;
 
 public class SongSetupController {
 
@@ -78,5 +79,8 @@ public class SongSetupController {
         txtFTags.clear();
         sldrKeyCount.setValue(4.0);
         sldrOverallDifficulty.setValue(8.0);
+
+         
+        
     }
 }

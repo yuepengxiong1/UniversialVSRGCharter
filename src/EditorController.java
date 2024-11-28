@@ -24,8 +24,6 @@ public class EditorController {
     @FXML
     private Label myLabel;
 
-    private Button btnAddObject;
-
     @FXML
     private Pane anchorPaneScroll;
 
@@ -59,6 +57,7 @@ public class EditorController {
         }
     }
 
+    //Handles Open file. .osu is only supported for now. 
     @FXML
     private void handleOpenMenu(){
         Stage stage = new Stage();
@@ -93,7 +92,7 @@ public class EditorController {
             }
 
             OSUManiaMetadata hello = new OSUManiaMetadata(file.getAbsolutePath());
-            //hello.returnMetadataOsu();
+            hello.returnMetadataOsu();
         }
         
     }
@@ -112,10 +111,10 @@ public class EditorController {
 
         // Add the rectangle to the content pane
         anchorPaneScroll.getChildren().add(square);
-        }
+    }
 
-        @FXML
-        private void handleCreateBPMLines() {
+    @FXML
+    private void handleCreateBPMLines() {
         double bpm = 140;
         double seconds = 10;
         double interval = 60.0 / bpm; // interval between lines in seconds
@@ -148,10 +147,10 @@ public class EditorController {
 
             anchorPaneScroll.getChildren().add(column);
         }
-        }
+    }
 
-        @FXML
-        private void makeDraggable(Rectangle node) {
+    @FXML
+    private void makeDraggable(Rectangle node) {
         final double[] initialX = new double[1];
         final double[] initialY = new double[1];
 
@@ -173,10 +172,8 @@ public class EditorController {
             // Snap to the closest measure line
             double closestLineY = Math.round(newTranslateY / 50) * 50;
             node.setTranslateY(closestLineY);
-        });
-        
-        
-}
+        });       
+    }
 }
 
     

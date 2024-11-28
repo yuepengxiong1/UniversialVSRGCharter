@@ -4,9 +4,6 @@
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.io.FileInputStream;
-import java.nio.charset.StandardCharsets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +14,16 @@ public class OSUManiaMetadata extends ChartMetadata{
     //osu format meta data divided into same sections:
 
     //General
-    private final Object[][] generalMetadata = new Object[0][0];
+    private final List<Object[]> generalMetadata = new ArrayList<>();
 
     //Editor
-    private final Object[][] editorMetadata = new Object[0][0];
+    private final List<Object[]> editorMetadata = new ArrayList<>();
 
-    private final Object[][] metaData = new Object[0][0];
+    //Metadata
+    private final List<Object[]> metaData = new ArrayList<>();
 
-    private final Object[][] difficultyMetadata = new Object[0][0];
+    //Difficulty
+    private final List<Object[]> difficultyMetadata = new ArrayList<>();
 
     // Events
     private String[] backgroundEvents = new String[5];
@@ -37,6 +36,7 @@ public class OSUManiaMetadata extends ChartMetadata{
         backgroundEvents[4] = "0"; // y offset
     }
 
+    //this is for parsing what kind of data type is being encountered
     private Object parseValue(String value, Object defaultValue) {
         if (defaultValue instanceof Integer) {
             return Integer.parseInt(value);
@@ -56,16 +56,25 @@ public class OSUManiaMetadata extends ChartMetadata{
         super(songName, artist, creatorOfChart, pathToChartDirectory, BPM, setSongOffset, difficultyList, arrayContainingCharts);
     }
 
-    //this is used when you read a chart
+    //this is used when you read a chart. BufferReader for passed in file. Accessed by Open menu.
     public OSUManiaMetadata(String filePath){
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
-            String line;
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line; //saves current line of the reader
+
+            //while the current line is not null, do...
             while ((line = br.readLine()) != null) {
-                System.out.println(line); // Print each line
-                // Process each line of the file
-                if (line.startsWith("[HitObjects]")) {
-                    break; // Stop processing if we encounter [HitObjects]
-                } else if (line.startsWith("[General]")) {
+
+                //to skip empty lines
+                if (line.trim().isEmpty()) {
+                    continue; 
+                }
+
+                //System.out.println("Current line is: " + line); // Print each line
+
+                //this handles what section we are in inside the .osu file.
+                //if we encounter [General], the next lines are associated with that section
+                //and we store to a arraylist in order of apperace
+                if (line.startsWith("[General]")) {
                     processSection(br, line, generalMetadata);
                 } else if (line.startsWith("[Editor]")) {
                     processSection(br, line, editorMetadata);
@@ -73,79 +82,66 @@ public class OSUManiaMetadata extends ChartMetadata{
                     processSection(br, line, metaData);
                 } else if (line.startsWith("[Difficulty]")) {
                     processSection(br, line, difficultyMetadata);
+                } else if (line.startsWith("[HitObjects]")) {
+                    break; // Stop processing if we encounter [HitObjects]
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+     
+    }
+        
+    // we pass in the reader, the line we are currently on, and the arraylist that we are on.
+    // we are passing by reference so we are directly changing it.
+    private void processSection(BufferedReader br, String line, List<Object[]> metadata) throws IOException {
+        
+        //if the line starts with [ , we skip. the next line is guranteed to be the stuff we want.
+        //we keep going until we reach an empty line. 
+        while (!(line = br.readLine()).startsWith("[") && !line.startsWith("[HitObjects]")) {
+            
+            //this breaks out of loop when we get an empty line. reader will skip [Editor] because it has read that line
+            //and whenever we use .readLine(), it will iterate by 1 line. So to prevent it from skipping [Editor], we exit loop
+            if (line.trim().isEmpty()) {
+                break;
+            }
+
+            //Holds an array of 2 elements. Splits by :
+            String[] parts = line.split(":", 2);
+
+            //and if we get 2, we set them based on variable and value
+            if (parts.length == 2) {
+                String variable = parts[0].trim();
+                String value = parts[1].trim();
+                metadata.add(new Object[]{variable, parseValue(value, "")});
+            }
+        }  
     }
 
-        private void processSection(BufferedReader br, String line, Object[][] metadata) throws IOException {
-            //we want to stop before this section. we only want to get data from the file and notes are handled 
-            //somewhere else
-            while (!(line = br.readLine()).startsWith("[") && !line.startsWith("[HitObjects]")) {
-                //System.out.println(line); // Print each line
-                String[] parts = line.split(":", 2);
-                if (parts.length == 2) {
-                    String variable = parts[0].trim(); //left side of :
-                    String value = parts[1].trim(); //right side of :
-
-                    for (int i = 0; i < metadata.length; i++) {
-                        if (variable.equals(metadata[i][0])) {
-                            metadata[i][1] = parseValue(value, metadata[i][1]);
-                            if (containsJapaneseCharacters((String) metadata[i][1])) {
-                                System.out.println("Japanese characters found in: " + metadata[i][0]);
-                            }
-                        }
-                    }
-                }
-            }
-            // Print the metadata array
-            for (Object[] meta : metadata) {
-                System.out.println(meta[0] + ": " + meta[1]);
-            }
-        }
-
-        private boolean containsJapaneseCharacters(String text) {
-        for (char c : text.toCharArray()) {
-            if (isJapaneseCharacter(c)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isJapaneseCharacter(char c) {
-        return (c >= '\u3040' && c <= '\u309F') || // Hiragana
-               (c >= '\u30A0' && c <= '\u30FF') || // Katakana
-               (c >= '\u4E00' && c <= '\u9FFF');   // Kanji (CJK Unified Ideographs)
-    }
-
+    //Just returns the metadata in the format of the .osu file.
     public void returnMetadataOsu(){
-        System.out.println("General Metadata:");
+        System.out.println("[General]");
         for (Object[] meta : generalMetadata) {
             System.out.println(meta[0] + ": " + meta[1]);
         }
-
-        System.out.println("\nEditor Metadata:");
+        
+        System.out.println("\n[Editor]");
         for (Object[] meta : editorMetadata) {
             System.out.println(meta[0] + ": " + meta[1]);
         }
 
-        System.out.println("\nMetadata:");
+        System.out.println("\n[Metadata]");
         for (Object[] meta : metaData) {
             System.out.println(meta[0] + ": " + meta[1]);
         }
 
-        System.out.println("\nDifficulty Metadata:");
+        System.out.println("\n[Difficulty]");
         for (Object[] meta : difficultyMetadata) {
             System.out.println(meta[0] + ": " + meta[1]);
         }
 
         System.out.println("\nBackground Events:");
-        for (String event : backgroundEvents) {
-            System.out.println(event);
-        }
+        System.out.println(String.join(", ", backgroundEvents));
     }
 
     

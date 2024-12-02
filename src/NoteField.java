@@ -9,47 +9,36 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class NoteField {
-    protected List<String> notes;
+    protected List<Object[]> notes;
     private String pathToFile;
-    private int locationOfNoteInMS;
+    private int noteLengthInMS;
+
+
 
     public NoteField(String filePath) {
         pathToFile = filePath;
     }
+    public NoteField(List<Object[]> notes) {
+        this.notes = notes;
+    }
 
 }
 
-class OSUManiaNoteReader extends NoteField{
-    public OSUManiaNoteReader(String filePath) {
-        super(filePath);
+class Note {
+    float columnPosition; 
+    int typeOfNote;
+    int locationOfNoteInMS;
+    int endOfNoteInMs; //for long notes
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            boolean hitObjectsSection = false;
+}
 
-            while ((line = br.readLine()) != null) {
-                if (line.trim().equals("[HitObjects]")) {
-                    hitObjectsSection = true;
-                    continue;
-                }
-
-                if (hitObjectsSection) {
-                    notes.add(line);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        for (String note : notes) {
-            System.out.println(note);
-        }
-
+class OSUManiaNoteReader extends NoteField {
+    public OSUManiaNoteReader(List<Object[]> notesList) {
+        super(notesList);
+        
     }
 
-    public void osuProcessNotes(){
-
+    public void osuProcessNotes() {
+        // Implementation for processing notes
     }
-
-    
 }

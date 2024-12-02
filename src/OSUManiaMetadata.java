@@ -14,27 +14,25 @@ public class OSUManiaMetadata extends ChartMetadata{
     //osu format meta data divided into same sections:
 
     //General
-    private final List<Object[]> generalMetadata = new ArrayList<>();
+    private  List<Object[]> generalMetadata = new ArrayList<>();
 
     //Editor
-    private final List<Object[]> editorMetadata = new ArrayList<>();
+    private  List<Object[]> editorMetadata = new ArrayList<>();
 
     //Metadata
-    private final List<Object[]> metaData = new ArrayList<>();
+    private  List<Object[]> metaData = new ArrayList<>();
 
     //Difficulty
-    private final List<Object[]> difficultyMetadata = new ArrayList<>();
+    private  List<Object[]> difficultyMetadata = new ArrayList<>();
 
-    // Events
-    private String[] backgroundEvents = new String[5];
-    {
-        //this just sets the bg image
-        backgroundEvents[0] = "0"; 
-        backgroundEvents[1] = "0"; 
-        backgroundEvents[2] = "0"; //filename
-        backgroundEvents[3] = "0"; //x offset
-        backgroundEvents[4] = "0"; // y offset
-    }
+    // Events. Holds if 
+    private  List<Object[]> backgroundEvents = new ArrayList<>();
+
+    //Timing Points
+    private  List<Object[]> timingPoints = new ArrayList<>();
+
+    //Hit Objects
+    private  List<Object[]> notesList = new ArrayList<>();
 
     //this is for parsing what kind of data type is being encountered
     private Object parseValue(String value, Object defaultValue) {
@@ -48,6 +46,7 @@ public class OSUManiaMetadata extends ChartMetadata{
             return Boolean.parseBoolean(value);
         } else {
             return value;
+            
         }
     }      
     
@@ -82,10 +81,14 @@ public class OSUManiaMetadata extends ChartMetadata{
                     processSection(br, line, metaData);
                 } else if (line.startsWith("[Difficulty]")) {
                     processSection(br, line, difficultyMetadata);
+                } else if (line.startsWith("[Events]")) {
+                    processSection(br, line, backgroundEvents);
+                } else if (line.startsWith("[TimingPoints]")) {
+                    processSection(br, line, timingPoints);
                 } else if (line.startsWith("[HitObjects]")) {
-                    break; // Stop processing if we encounter [HitObjects]
+                    processSection(br, line, notesList);
                 }
-            }
+            } 
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,10 +98,9 @@ public class OSUManiaMetadata extends ChartMetadata{
     // we pass in the reader, the line we are currently on, and the arraylist that we are on.
     // we are passing by reference so we are directly changing it.
     private void processSection(BufferedReader br, String line, List<Object[]> metadata) throws IOException {
-        
         //if the line starts with [ , we skip. the next line is guranteed to be the stuff we want.
         //we keep going until we reach an empty line. 
-        while (!(line = br.readLine()).startsWith("[") && !line.startsWith("[HitObjects]")) {
+        while ((line = br.readLine()) != null && !line.startsWith("[")) {
             
             //this breaks out of loop when we get an empty line. reader will skip [Editor] because it has read that line
             //and whenever we use .readLine(), it will iterate by 1 line. So to prevent it from skipping [Editor], we exit loop
@@ -106,14 +108,19 @@ public class OSUManiaMetadata extends ChartMetadata{
                 break;
             }
 
-            //Holds an array of 2 elements. Splits by :
-            String[] parts = line.split(":", 2);
+            // for when we encounter // or number
+            if (line.startsWith("//") || Character.isDigit(line.charAt(0))) {
+                metadata.add(new Object[]{line.trim()});
+            } else {
+                //Holds an array of 2 elements. Splits by :
+                String[] parts = line.split(":", 2);
 
-            //and if we get 2, we set them based on variable and value
-            if (parts.length == 2) {
-                String variable = parts[0].trim();
-                String value = parts[1].trim();
-                metadata.add(new Object[]{variable, parseValue(value, "")});
+                //and if we get 2, we set them based on variable and value
+                if (parts.length == 2) {
+                    String variable = parts[0].trim();
+                    String value = parts[1].trim();
+                    metadata.add(new Object[]{variable, parseValue(value, "")});
+                }
             }
         }  
     }
@@ -140,8 +147,21 @@ public class OSUManiaMetadata extends ChartMetadata{
             System.out.println(meta[0] + ": " + meta[1]);
         }
 
-        System.out.println("\nBackground Events:");
-        System.out.println(String.join(", ", backgroundEvents));
+        System.out.println("\n[Events]");
+        for (Object[] meta : backgroundEvents) {
+            System.out.println(meta[0]);
+        }
+
+        System.out.println("\n[TimingPoints]");
+        for (Object[] meta : timingPoints) {
+            System.out.println(meta[0]);
+        }
+
+        System.out.println("\n[HitObjects]");
+        for (Object[] meta : notesList) {
+            System.out.println(meta[0]);
+        }
+        
     }
 
     

@@ -80,6 +80,7 @@ public class EditorController {
             }
         }
 
+            
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             System.out.println("File selected: " + file.getAbsolutePath());

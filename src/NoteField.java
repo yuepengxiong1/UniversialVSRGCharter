@@ -10,8 +10,10 @@ import java.io.IOException;
 
 public class NoteField {
     protected List<Object[]> notes;
+    protected List<Object> storeEntireNote;
     private String pathToFile;
     private int noteLengthInMS;
+    protected int keyCount = 0;
 
 
 
@@ -49,8 +51,9 @@ class Note {
 }
 
 class OSUManiaNoteReader extends NoteField {
-    public OSUManiaNoteReader(List<Object[]> notesList) {
+    public OSUManiaNoteReader(List<Object[]> notesList, int keycount) {
         super(notesList);
+        this.keyCount = keycount;
         
     }
         /*  From osu documentation: https://osu.ppy.sh/wiki/en/Client/File_formats/osu_(file_format)#hit-objects
@@ -63,7 +66,8 @@ class OSUManiaNoteReader extends NoteField {
             objectParams (Comma-separated list): Extra parameters specific to the object's type.
             hitSample (Colon-separated list): Information about which samples are played when the object is hit. It is closely related to hitSound; see the hitsounds section. If it is not written, it defaults to 0:0:0:0:.
          */
-    public void osuProcessNotes(int keycount) {
+    public void osuProcessNotes() {
+
         for (Object[] noteLine : notes) {
             String line = noteLine[0].toString();
             line = line.split(":")[0]; // Remove the part after the first colon
@@ -73,20 +77,26 @@ class OSUManiaNoteReader extends NoteField {
             }
 
            Note note = parseNoteFromLine(noteParts);
+           storeEntireNote.add(new Object[]{note.getColumnPosition(), note.getTypeOfNote(), note.getLocationOfNoteInMS(), note.getEndOfNoteInMs()});
+        }
+
+        if (!notes.isEmpty()) {
+            Object[] firstNote = notes.get(0);
+            System.out.println("First element of the first note: " + firstNote[0]);
         }
     }
 
     private Note parseNoteFromLine(Object[] noteLine) {
         Note note = new Note();
-        note.columnPosition = Float.parseFloat(noteLine[0].toString());
-        note.locationOfNoteInMS = Integer.parseInt(noteLine[2].toString());
-        note.typeOfNote = Integer.parseInt(noteLine[3].toString());
-        
-        if (noteLine.length > 5) {
-            note.endOfNoteInMs = Integer.parseInt(noteLine[5].toString());
-        } else {
-            note.endOfNoteInMs = note.locationOfNoteInMS; // For short notes
+        note.columnPosition = (float) Math.floor(Float.parseFloat(noteLine[0].toString()) * keyCount / 512); //output what column the note is in
+        System.out.println("Colomn pos: " + note.columnPosition);
+        note.locationOfNoteInMS = Integer.parseInt(noteLine[2].toString()); //output the time where the note is placed in ms
+        note.typeOfNote = Integer.parseInt(noteLine[3].toString()); //outputs the type of note. 192 is long note
+
+        if (note.typeOfNote == 192){
+            note.endOfNoteInMs = Integer.parseInt(noteLine[5].toString()); //outputs the end of longnote in ms
         }
+        
         return note;
     }
 }

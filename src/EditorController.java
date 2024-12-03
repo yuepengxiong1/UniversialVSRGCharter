@@ -29,6 +29,7 @@ public class EditorController {
 
     private boolean didPassFile = false;
     private OSUManiaMetadata hello;
+    protected Object noteTest;
 
     @FXML
     private Label myLabel;
@@ -47,6 +48,10 @@ public class EditorController {
     private void handleAddObject() {
         Rectangle square = new Rectangle(50, 50, Color.BLUE);
 
+        noteTest = hello.returnNotes();
+
+
+
         // Set an initial position for the rectangle
         square.setTranslateX(100);
         square.setTranslateY(100);
@@ -64,7 +69,7 @@ public class EditorController {
             int keys = hello.getKeyCount(); // Assuming getKeys() returns the number of keys
             System.out.println("Init ran. keycount: " + keys);
              // Adjust the scroll pane based on the number of keys
-            double newWidth = keys * 50;
+            double newWidth = keys * 100;
 
             System.out.println("ScrollPane width: " + containerForScrollPaneNote.getPrefWidth());
             System.out.println("AnchorPane width: " + containerForAnchorPaneNote.getPrefWidth());
@@ -72,16 +77,23 @@ public class EditorController {
             containerForScrollPaneNote.setPrefWidth(newWidth);
             containerForAnchorPaneNote.setPrefWidth(newWidth);
 
+            System.out.println("ScrollPane width: " + containerForScrollPaneNote.getPrefWidth());
+            System.out.println("AnchorPane width: " + containerForAnchorPaneNote.getPrefWidth());
+
             // Clear existing children to avoid duplicates
             mainHBox.getChildren().clear();
 
             // Add the panes to the HBox
-            mainHBox.getChildren().addAll(containerForScrollPaneNote, containerForAnchorPaneNote);
+            mainHBox.getChildren().addAll(containerForScrollPaneNote);
+            
+            containerForScrollPaneNote.setContent(containerForAnchorPaneNote);
+            handleCreateColumnLines();
+            
 
             // Center the panes within the HBox
-            HBox.setHgrow(containerForScrollPaneNote, Priority.ALWAYS);
-            HBox.setHgrow(containerForAnchorPaneNote, Priority.ALWAYS);
-            mainHBox.setAlignment(Pos.CENTER);
+            //HBox.setHgrow(containerForScrollPaneNote, Priority.ALWAYS);
+            //HBox.setHgrow(containerForAnchorPaneNote, Priority.ALWAYS);
+           // mainHBox.setAlignment(Pos.CENTER);
 
             
            
@@ -143,12 +155,13 @@ public class EditorController {
             hello = new OSUManiaMetadata(file.getAbsolutePath());
             //hello.returnMetadataOsu();
             initializeNoteField();
+            
         }
         
     }
 
     @FXML
-    private void handleAddSquare() {
+    private void handleAddNoteToPane() {
         // Create a new rectangle
         Rectangle square = new Rectangle(50, 50, Color.BLUE);
 
@@ -156,11 +169,8 @@ public class EditorController {
         square.setTranslateX(100);
         square.setTranslateY(100);
 
-        // Make the rectangle draggable
-        makeDraggable(square);
-
-        // Add the rectangle to the content pane
-        containerForAnchorPaneNote.getChildren().add(square);
+        // Create a new Note object
+        
     }
 
     @FXML
@@ -198,9 +208,25 @@ public class EditorController {
             containerForAnchorPaneNote.getChildren().add(column);
         }
     }
-
+    
     @FXML
-    private void makeDraggable(Rectangle node) {
+    private void handleCreateColumnLines() {
+        int keys = hello.getKeyCount();
+        double columnWidth = containerForAnchorPaneNote.getPrefWidth() / keys;
+
+        for (int i = 0; i < keys; i++) {
+            double positionX = i * columnWidth;
+
+            Rectangle columnLine = new Rectangle(2, containerForAnchorPaneNote.getPrefHeight(), Color.BLACK);
+            columnLine.setHeight(containerForAnchorPaneNote.getPrefHeight());
+            columnLine.setTranslateX(positionX);
+
+            containerForAnchorPaneNote.getChildren().add(columnLine);
+        }
+    }
+
+        @FXML
+        private void makeDraggable(Rectangle node) {
         final double[] initialX = new double[1];
         final double[] initialY = new double[1];
 

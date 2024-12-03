@@ -100,7 +100,7 @@ public class OSUManiaMetadata extends ChartMetadata{
         } catch (IOException e) {
             e.printStackTrace();
         }
-         OSUManiaNoteReader mania = new OSUManiaNoteReader(notesList);
+        
          int keycount = 0;
          for (Object[] meta : difficultyMetadata) {
             System.out.println(meta[0]);
@@ -108,8 +108,8 @@ public class OSUManiaMetadata extends ChartMetadata{
                 keycount = Integer.parseInt(meta[1].toString());
             }
         }
-        
-         mania.osuProcessNotes(keycount);
+        OSUManiaNoteReader mania = new OSUManiaNoteReader(notesList, keycount);
+        mania.osuProcessNotes();
      
     }
         
@@ -164,6 +164,10 @@ public class OSUManiaMetadata extends ChartMetadata{
         
         }
         return -1;
+    }
+
+    public Object returnNotes(){
+        return notesList;
     }
 
     //Just returns the metadata in the format of the .osu file. Debugging purposes

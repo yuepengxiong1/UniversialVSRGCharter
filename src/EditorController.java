@@ -5,14 +5,20 @@ import java.util.Scanner;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 
@@ -21,11 +27,20 @@ import javafx.stage.FileChooser;
 
 public class EditorController {
 
+    private boolean didPassFile = false;
+    private OSUManiaMetadata hello;
+
     @FXML
     private Label myLabel;
 
     @FXML
-    private Pane anchorPaneScroll;
+    private AnchorPane containerForAnchorPaneNote = new AnchorPane();
+
+    @FXML
+    private ScrollPane containerForScrollPaneNote = new ScrollPane();
+
+     @FXML
+    private HBox mainHBox;
 
 
     @FXML
@@ -40,8 +55,40 @@ public class EditorController {
         makeDraggable(square);
 
         // Add the rectangle to the content pane
-        anchorPaneScroll.getChildren().add(square);
+        containerForAnchorPaneNote.getChildren().add(square);
     }
+
+    @FXML
+    private void initializeNoteField() {
+        if (didPassFile == true){
+            int keys = hello.getKeyCount(); // Assuming getKeys() returns the number of keys
+            System.out.println("Init ran. keycount: " + keys);
+             // Adjust the scroll pane based on the number of keys
+            double newWidth = keys * 50;
+
+            System.out.println("ScrollPane width: " + containerForScrollPaneNote.getPrefWidth());
+            System.out.println("AnchorPane width: " + containerForAnchorPaneNote.getPrefWidth());
+
+            containerForScrollPaneNote.setPrefWidth(newWidth);
+            containerForAnchorPaneNote.setPrefWidth(newWidth);
+
+            // Clear existing children to avoid duplicates
+            mainHBox.getChildren().clear();
+
+            // Add the panes to the HBox
+            mainHBox.getChildren().addAll(containerForScrollPaneNote, containerForAnchorPaneNote);
+
+            // Center the panes within the HBox
+            HBox.setHgrow(containerForScrollPaneNote, Priority.ALWAYS);
+            HBox.setHgrow(containerForAnchorPaneNote, Priority.ALWAYS);
+            mainHBox.setAlignment(Pos.CENTER);
+
+            
+           
+        }
+    }
+
+    
 
     @FXML
     private void handleMenuNewChart(){
@@ -60,6 +107,7 @@ public class EditorController {
     //Handles Open file. .osu is only supported for now. 
     @FXML
     private void handleOpenMenu(){
+        didPassFile = true;
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
@@ -92,8 +140,9 @@ public class EditorController {
             e.printStackTrace();
             }
 
-            OSUManiaMetadata hello = new OSUManiaMetadata(file.getAbsolutePath());
-            hello.returnMetadataOsu();
+            hello = new OSUManiaMetadata(file.getAbsolutePath());
+            //hello.returnMetadataOsu();
+            initializeNoteField();
         }
         
     }
@@ -111,7 +160,7 @@ public class EditorController {
         makeDraggable(square);
 
         // Add the rectangle to the content pane
-        anchorPaneScroll.getChildren().add(square);
+        containerForAnchorPaneNote.getChildren().add(square);
     }
 
     @FXML
@@ -125,14 +174,14 @@ public class EditorController {
             double positionY = i * 50; // separate lines by 50px
             double timeOfMeasureLine = i * interval; // calculate the time of the measure line
 
-            Rectangle line = new Rectangle(anchorPaneScroll.getWidth(), 2, Color.RED);
+            Rectangle line = new Rectangle(containerForAnchorPaneNote.getWidth(), 2, Color.RED);
             line.setTranslateY(positionY);
 
-            anchorPaneScroll.getChildren().add(line);
+            containerForAnchorPaneNote.getChildren().add(line);
 
             // Extend the scroll pane if the line is moved outside its current bounds
-            if (positionY + line.getHeight() > anchorPaneScroll.getHeight()) {
-            anchorPaneScroll.setPrefHeight(positionY + line.getHeight());
+            if (positionY + line.getHeight() > containerForAnchorPaneNote.getHeight()) {
+                containerForAnchorPaneNote.setPrefHeight(positionY + line.getHeight());
             }
 
             // Print the time of the measure line
@@ -141,12 +190,12 @@ public class EditorController {
 
         // Create 4 columns
         for (int i = 0; i < 4; i++) {
-            double positionX = i * (anchorPaneScroll.getWidth() / 4); // separate columns evenly
+            double positionX = i * (containerForAnchorPaneNote.getWidth() / 4); // separate columns evenly
 
-            Rectangle column = new Rectangle(2, anchorPaneScroll.getHeight(), Color.RED);
+            Rectangle column = new Rectangle(2, containerForAnchorPaneNote.getHeight(), Color.RED);
             column.setTranslateX(positionX);
 
-            anchorPaneScroll.getChildren().add(column);
+            containerForAnchorPaneNote.getChildren().add(column);
         }
     }
 

@@ -73,25 +73,43 @@ public class OSUManiaMetadata extends ChartMetadata{
                 //this handles what section we are in inside the .osu file.
                 //if we encounter [General], the next lines are associated with that section
                 //and we store to a arraylist in order of apperace
-                if (line.startsWith("[General]")) {
-                    processSection(br, line, generalMetadata);
-                } else if (line.startsWith("[Editor]")) {
-                    processSection(br, line, editorMetadata);
-                } else if (line.startsWith("[Metadata]")) {
-                    processSection(br, line, metaData);
-                } else if (line.startsWith("[Difficulty]")) {
-                    processSection(br, line, difficultyMetadata);
-                } else if (line.startsWith("[Events]")) {
-                    processSection(br, line, backgroundEvents);
-                } else if (line.startsWith("[TimingPoints]")) {
-                    processSection(br, line, timingPoints);
-                } else if (line.startsWith("[HitObjects]")) {
-                    processSection(br, line, notesList);
+                switch (line) {
+                    case "[General]":
+                        processSection(br, line, generalMetadata);
+                        break;
+                    case "[Editor]":
+                        processSection(br, line, editorMetadata);
+                        break;
+                    case "[Metadata]":
+                        processSection(br, line, metaData);
+                        break;
+                    case "[Difficulty]":
+                        processSection(br, line, difficultyMetadata);
+                        break;
+                    case "[Events]":
+                        processSection(br, line, backgroundEvents);
+                        break;
+                    case "[TimingPoints]":
+                        processSection(br, line, timingPoints);
+                        break;
+                    case "[HitObjects]":
+                        processSection(br, line, notesList);
+                        break;
                 }
             } 
         } catch (IOException e) {
             e.printStackTrace();
         }
+         OSUManiaNoteReader mania = new OSUManiaNoteReader(notesList);
+         int keycount = 0;
+         for (Object[] meta : difficultyMetadata) {
+            System.out.println(meta[0]);
+            if ((meta[0]).equals("CircleSize")) {
+                keycount = Integer.parseInt(meta[1].toString());
+            }
+        }
+        
+         mania.osuProcessNotes(keycount);
      
     }
         
@@ -125,7 +143,30 @@ public class OSUManiaMetadata extends ChartMetadata{
         }  
     }
 
-    //Just returns the metadata in the format of the .osu file.
+    //overrides method. returns file name as a string.
+    @Override
+    public String getSongName() {
+        for (Object[] meta : generalMetadata) {
+            if ("AudioFilename".equals(meta[0])) {
+                return (String) meta[1];
+            }
+        }
+        return null;
+    }
+
+    //retrieves keycount in .osu file. Stored as CircleSize
+    public int getKeyCount(){
+        for (Object[] meta : difficultyMetadata) {
+            System.out.println(meta[0]);
+            if ((meta[0]).equals("CircleSize")) {
+                return Integer.parseInt(meta[1].toString());
+            }
+        
+        }
+        return -1;
+    }
+
+    //Just returns the metadata in the format of the .osu file. Debugging purposes
     public void returnMetadataOsu(){
         System.out.println("[General]");
         for (Object[] meta : generalMetadata) {

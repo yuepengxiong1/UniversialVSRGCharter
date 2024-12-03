@@ -154,7 +154,10 @@ public class EditorController {
 
             hello = new OSUManiaMetadata(file.getAbsolutePath());
             //hello.returnMetadataOsu();
+            hello.setSongLengthMs();
             initializeNoteField();
+
+            
             
         }
         
@@ -225,8 +228,8 @@ public class EditorController {
         }
     }
 
-        @FXML
-        private void makeDraggable(Rectangle node) {
+    @FXML
+    private void makeDraggable(Rectangle node) {
         final double[] initialX = new double[1];
         final double[] initialY = new double[1];
 

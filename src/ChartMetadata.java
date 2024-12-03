@@ -17,6 +17,7 @@ public abstract class ChartMetadata {
     protected int setSongOffset;
     protected String[] difficultyList;
     protected String[] arrayContainingCharts; //sometimes song directories hold multiple songs in the same folder. OSU does this to handle packs
+    protected int songLengthMs;
     
 
     //Every chart will use this in the child class
@@ -41,6 +42,18 @@ public abstract class ChartMetadata {
         this.difficultyList = new String[]{"Easy", "Medium", "Hard"};
         this.arrayContainingCharts = new String[]{};
     }
+
+    public ChartMetadata(String pathToChartDirectory){
+        this.pathToChartDirectory = pathToChartDirectory;
+    }
+
+    public void setSongLengthMs(int songLengthMs){
+         this.songLengthMs = songLengthMs;
+    }
+
+    public int getSongLengthMs(){
+        return songLengthMs;
+   }
 
     public String getSongName() {
         return songName;

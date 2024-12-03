@@ -1,18 +1,30 @@
-## Getting Started
+This is Universal Charter:
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+A program that is an all in one editor for various types of VSRG formats. 
+Currently only supports .osu
 
-## Folder Structure
+Since this is unfinished, please run the main function in code.
 
-The workspace contains two folders by default, where:
+Make sure to edit launch.json and settings.json to correctly use javafx:
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+Replace %PATH_TO_FILE% with the path of the lib folder of javafx
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+launch.json:
+```
+        "%PATH_TO_FILE%\\javafx.base.jar",
+        "%PATH_TO_FILE%b\\javafx.controls.jar",
+        "%PATH_TO_FILE%\\javafx.fxml.jar",
+        "%PATH_TO_FILE%\\javafx.graphics.jar",
+        "%PATH_TO_FILE%\\javafx.media.jar",
+        "%PATH_TO_FILE%\\javafx.swing.jar",
+        "%PATH_TO_FILE%\\javafx.web.jar",
+        "%PATH_TO_FILE%\\javafx-swt.jar"
+```
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+Add this argument to settings.json:
+```
+"vmArgs": "--module-path %PATH_TO_FILE% --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+        
+```
 
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+When you run the program, I have provided a sample chart in "Sample Files" folder. Using File>Open, choose the .osu file contained within the folders.

@@ -8,6 +8,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import java.io.File;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 
 public class OSUManiaMetadata extends ChartMetadata{
 
@@ -57,6 +66,7 @@ public class OSUManiaMetadata extends ChartMetadata{
 
     //this is used when you read a chart. BufferReader for passed in file. Accessed by Open menu.
     public OSUManiaMetadata(String filePath){
+        super(filePath);
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line; //saves current line of the reader
 
@@ -110,6 +120,7 @@ public class OSUManiaMetadata extends ChartMetadata{
         }
         OSUManiaNoteReader mania = new OSUManiaNoteReader(notesList, keycount);
         mania.osuProcessNotes();
+    
      
     }
         
@@ -152,6 +163,28 @@ public class OSUManiaMetadata extends ChartMetadata{
             }
         }
         return null;
+    }
+
+    public void setSongLengthMs(){
+        String songNameString = getSongName();
+
+    File songFile = new File(getPathToChartDirectory() + "/" + songNameString);
+    System.out.println(songFile);
+    if (songFile.exists()) {
+        try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(songFile)) {
+            AudioFormat format = audioInputStream.getFormat();
+            long audioFileLength = songFile.length();
+            int frameSize = format.getFrameSize();
+            float frameRate = format.getFrameRate();
+            float durationInSeconds = (audioFileLength / (frameSize * frameRate));
+            setSongLengthMs((int) (durationInSeconds * 1000));
+            System.out.println("Song length in milliseconds: " + getSongLengthMs());
+        } catch (UnsupportedAudioFileException | IOException e) {
+            e.printStackTrace();
+            System.out.println("File not supported");
+        }
+    }
+
     }
 
     //retrieves keycount in .osu file. Stored as CircleSize

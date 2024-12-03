@@ -77,7 +77,7 @@ class OSUManiaNoteReader extends NoteField {
             }
 
            Note note = parseNoteFromLine(noteParts);
-           storeEntireNote.add(new Object[]{note.getColumnPosition(), note.getTypeOfNote(), note.getLocationOfNoteInMS(), note.getEndOfNoteInMs()});
+          // storeEntireNote.add(new Object[]{note.getColumnPosition(), note.getTypeOfNote(), note.getLocationOfNoteInMS(), note.getEndOfNoteInMs()});
         }
 
         if (!notes.isEmpty()) {
